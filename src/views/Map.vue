@@ -14,6 +14,17 @@
       :max-zoom="7"
     />
   </l-map>
+  <button @click="toggleModalState">Options</button>
+
+    <modal 
+      v-if="modalOpen"
+      @close="toggleModalState"
+    >
+      <teleport to="#modal-wrapper"> 
+        <p>A list of options</p>
+      </teleport>
+    </modal>
+
 </template>
 
 <script>
@@ -21,15 +32,18 @@
 // Its CSS is needed though, if not imported elsewhere in your application.
 import "leaflet/dist/leaflet.css"
 import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
+import Modal from "../components/Modal.vue";
 
 export default {
   components: {
+    Modal,
     LMap,
     LGeoJson,
     LTileLayer
   },
   data() {
     return {
+      modalOpen: true,
       zoom: 2,
       geojson: {
         type: "FeatureCollection",
@@ -41,6 +55,11 @@ export default {
         // Options that don't rely on Leaflet methods.
       },
     };
+  },
+  methods: {
+    toggleModalState() {
+      this.modalOpen = !this.modalOpen;
+    }
   },
   async beforeMount() {
     // HERE is where to load Leaflet components!
