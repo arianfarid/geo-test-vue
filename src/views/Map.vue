@@ -1,10 +1,15 @@
 <template>
   <label for="checkbox">GeoJSON Visibility</label>
+ 
+ <!-- Layer toggle -->
+
   <input
     id="checkbox"
     v-model="show"
     type="checkbox"
   >
+
+<!-- Define map box -->
 
   <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" style="height:50vh">
     <l-geo-json v-model="geojson" v-if="show" :geojson="geojson" :options="geojsonOptions" />
@@ -14,18 +19,13 @@
       name="OpenStreetMap"
       :max-zoom="10"
     />
-    <l-tile-layer
-      url="https://s3.amazonaws.com/te512.safecast.org/{z}/{x}/{y}.png"
-      attribution="<a href='https://blog.safecast.org/about/'>SafeCast</a> (<a href='https://creativecommons.org/licenses/by-sa/3.0/'>CC-BY-SA</a>"
-      :min-zoom="5"
-      :max-zoom="7"
-    />
     <l-marker :lat-lng="GPScoordinates" draggable @move="updateCoordinates"></l-marker>
 
   </l-map>
+  <!-- Interactivity buttons -->
   <button @click="toggleModalState">Debug</button>
   <button @click="addGPSPoint()">Add GPS</button>
-  <button @click="pushGPStoGeoJSON">Add to Layer</button>
+  <button @click="pushGPStoGeoJSON(), refreshGeoJSON()">Add to Layer</button>
   <modal 
     v-if="modalOpen"
     @close="toggleModalState"
@@ -53,7 +53,7 @@ export default {
     LMap,
     LGeoJson,
     LTileLayer,
-    LMarker
+    LMarker,
   },
   data() {
     return {
@@ -61,7 +61,9 @@ export default {
       show: true,
       zoom: 2,
       geojson: {
+
         type: "FeatureCollection",
+
         features: [
           {
             "type" : "Feature", 
@@ -76,6 +78,7 @@ export default {
           }
         ],
       },
+
       geojsonOptions: {
         //can't use leaflet methods in here
         style: {
@@ -84,7 +87,9 @@ export default {
           "opacity": 0.65
         },
       },
-      GPScoordinates: []
+
+      GPScoordinates: null,
+
     };
   },
   watch: {
@@ -103,9 +108,8 @@ export default {
       this.GPScoordinates = [50,50];
     },
     pushGPStoGeoJSON() {
-
       //add to geojson
-      this.geojson.features.push(
+      this.fixBigCoordinates().geojson.features.push(
         {
           "type" : "Feature", 
           "properties" : {  
@@ -118,7 +122,27 @@ export default {
           }
         }
       );
-      this.geojsonOptions.pointToLayer;
+    },
+    refreshGeoJSON() {
+      // this.show = false;
+      // this.show = true;
+    },
+    fixBigCoordinates() {
+      if(this.GPScoordinates === null) {
+        return this;
+      }
+      //keep within proper coordinate size
+      if (this.GPScoordinates.lng > 180 || this.GPScoordinates.lng < -180) {
+        console.log('feature out of bounds... fixing...');
+        this.GPScoordinates.lng = (this.GPScoordinates.lng % 360 + 540) % 360 - 180;
+      }
+
+      if (this.GPScoordinates.lat > 90 || this.GPScoordinates.lat < -90) {
+        console.log('feature out of bounds... fixing...');
+        this.GPScoordinates.lat = (this.GPScoordinates.lat % 180 + 270) % 180 - 90;
+      }
+
+      return this;
     }
   },
   async beforeMount() {
@@ -132,6 +156,7 @@ export default {
   },
   async updated() {
     console.log('DOM updated');
+    // this.show = !this.show;
   }
 };
 </script>
