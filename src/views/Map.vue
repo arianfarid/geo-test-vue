@@ -1,6 +1,13 @@
 <template>
+  <label for="checkbox">GeoJSON Visibility</label>
+  <input
+    id="checkbox"
+    v-model="show"
+    type="checkbox"
+  >
+
   <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" style="height:50vh">
-    <l-geo-json :geojson="geojson" :options="geojsonOptions" />
+    <l-geo-json v-model="geojson" v-if="show" :geojson="geojson" :options="geojsonOptions" />
     <l-tile-layer
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       layer-type="base"
@@ -51,16 +58,39 @@ export default {
   data() {
     return {
       modalOpen: true,
+      show: true,
       zoom: 2,
       geojson: {
         type: "FeatureCollection",
-        features: [],
+        features: [
+          {
+            "type" : "Feature", 
+            "properties" : {  
+              "dataType" : "lat lng coordinate",
+              "notes"    : "test point." 
+            }, 
+            "geometry" : { 
+              "type" : "Point", 
+              "coordinates" : [15,30], 
+            }
+          }
+        ],
       },
       geojsonOptions: {
-        // Options that don't rely on Leaflet methods.
+        //can't use leaflet methods in here
+        style: {
+          "color": "#ff7800",
+          "weight": 5,
+          "opacity": 0.65
+        },
       },
       GPScoordinates: []
     };
+  },
+  watch: {
+    geojson () {
+      console.log('geojson update');
+    }
   },
   methods: {
     toggleModalState() {
@@ -73,18 +103,22 @@ export default {
       this.GPScoordinates = [50,50];
     },
     pushGPStoGeoJSON() {
+
+      //add to geojson
       this.geojson.features.push(
         {
           "type" : "Feature", 
           "properties" : {  
-            "dataType" : "GPSPoint", 
+            "dataType" : "lat lng coordinate", 
+            "notes"    : "user data"
           }, 
           "geometry" : { 
             "type" : "Point", 
-            "coordinates" : this.GPScoordinates, 
+            "coordinates" : [this.GPScoordinates.lng, this.GPScoordinates.lat], 
           }
         }
       );
+      this.geojsonOptions.pointToLayer;
     }
   },
   async beforeMount() {
@@ -96,5 +130,8 @@ export default {
       circleMarker(latLng, { radius: 8 });
     this.mapIsReady = true;
   },
+  async updated() {
+    console.log('DOM updated');
+  }
 };
 </script>
