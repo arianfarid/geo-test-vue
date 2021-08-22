@@ -13,17 +13,20 @@
       :min-zoom="5"
       :max-zoom="7"
     />
+    <l-marker :lat-lng="GPScoordinates" draggable @move="updateCoordinates"></l-marker>
+
   </l-map>
   <button @click="toggleModalState">Options</button>
-
-    <modal 
-      v-if="modalOpen"
-      @close="toggleModalState"
-    >
-      <teleport to="#modal-wrapper"> 
-        <p>A list of options</p>
-      </teleport>
-    </modal>
+  <button @click="addGPSPoint">Add GPS</button>
+  <modal 
+    v-if="modalOpen"
+    @close="toggleModalState"
+  >
+    <teleport to="#modal-wrapper"> 
+      <p>A list of options</p>
+      <p>{{ GPScoordinates }}</p>
+    </teleport>
+  </modal>
 
 </template>
 
@@ -31,15 +34,17 @@
 // DON'T load Leaflet components here!
 // Its CSS is needed though, if not imported elsewhere in your application.
 import "leaflet/dist/leaflet.css"
-import { LMap, LTileLayer, LGeoJson } from "@vue-leaflet/vue-leaflet";
+import { LMap, LTileLayer, LGeoJson, LMarker } from "@vue-leaflet/vue-leaflet";
 import Modal from "../components/Modal.vue";
+// import AddGPSPoint from "../components/AddGPSPoint.vue";
 
 export default {
   components: {
     Modal,
     LMap,
     LGeoJson,
-    LTileLayer
+    LTileLayer,
+    LMarker
   },
   data() {
     return {
@@ -54,11 +59,15 @@ export default {
       geojsonOptions: {
         // Options that don't rely on Leaflet methods.
       },
+      GPScoordinates: [50,50]
     };
   },
   methods: {
     toggleModalState() {
       this.modalOpen = !this.modalOpen;
+    },
+    updateCoordinates(e) {
+      this.GPScoordinates = e.latlng;
     }
   },
   async beforeMount() {
