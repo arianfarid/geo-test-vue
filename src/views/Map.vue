@@ -16,15 +16,17 @@
     <l-marker :lat-lng="GPScoordinates" draggable @move="updateCoordinates"></l-marker>
 
   </l-map>
-  <button @click="toggleModalState">Options</button>
-  <button @click="addGPSPoint">Add GPS</button>
+  <button @click="toggleModalState">Debug</button>
+  <button @click="addGPSPoint()">Add GPS</button>
+  <button @click="pushGPStoGeoJSON">Add to Layer</button>
   <modal 
     v-if="modalOpen"
     @close="toggleModalState"
   >
     <teleport to="#modal-wrapper"> 
       <p>A list of options</p>
-      <p>{{ GPScoordinates }}</p>
+      <p>Marker Coordinates: {{ GPScoordinates }}</p>
+      <p>GeoJson: {{ geojson }}</p>
     </teleport>
   </modal>
 
@@ -52,14 +54,12 @@ export default {
       zoom: 2,
       geojson: {
         type: "FeatureCollection",
-        features: [
-          // ...
-        ],
+        features: [],
       },
       geojsonOptions: {
         // Options that don't rely on Leaflet methods.
       },
-      GPScoordinates: [50,50]
+      GPScoordinates: []
     };
   },
   methods: {
@@ -68,6 +68,23 @@ export default {
     },
     updateCoordinates(e) {
       this.GPScoordinates = e.latlng;
+    },
+    addGPSPoint() {
+      this.GPScoordinates = [50,50];
+    },
+    pushGPStoGeoJSON() {
+      this.geojson.features.push(
+        {
+          "type" : "Feature", 
+          "properties" : {  
+            "dataType" : "GPSPoint", 
+          }, 
+          "geometry" : { 
+            "type" : "Point", 
+            "coordinates" : this.GPScoordinates, 
+          }
+        }
+      );
     }
   },
   async beforeMount() {
