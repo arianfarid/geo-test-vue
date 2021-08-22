@@ -5,11 +5,17 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: {
+      title: 'GeoCollector Test - Home'
+    },
   },
   {
     path: '/about',
     name: 'About',
+    meta: {
+      title: 'GeoCollector Test - About'
+    },
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -18,6 +24,9 @@ const routes = [
   {
     path: '/map',
     name: 'map',
+    meta: {
+      title: 'GeoCollector Test - Map'
+    },
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -28,6 +37,11 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-})
+});
+
+router.beforeEach((to, from, next)=> {
+  document.title = `${to.meta.title}`;
+  next();
+});
 
 export default router

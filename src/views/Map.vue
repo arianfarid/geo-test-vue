@@ -22,10 +22,13 @@
     <l-marker :lat-lng="GPScoordinates" draggable @move="updateCoordinates"></l-marker>
 
   </l-map>
+
   <!-- Interactivity buttons -->
-  <button @click="toggleModalState">Debug</button>
+
   <button @click="addGPSPoint()">Add GPS</button>
   <button @click="pushGPStoGeoJSON(), refreshGeoJSON()">Add to Layer</button>
+  
+  <button @click="toggleModalState">Debug</button>
   <modal 
     v-if="modalOpen"
     @close="toggleModalState"
