@@ -1,11 +1,18 @@
 <template>
-  <label for="checkbox">GeoJSON Visibility</label>
- 
- <!-- Layer toggle -->
 
+  <!-- GeoJSON toggle -->
+  <label for="checkbox">GeoJSON Visibility</label>
   <input
     id="checkbox"
     v-model="show"
+    type="checkbox"
+  >
+
+  <!-- Basemap Visibility -->
+  <label for="checkbox">Basemap Visibility</label>
+  <input
+    id="checkbox_basemap"
+    v-model="show_basemap"
     type="checkbox"
   >
 
@@ -14,6 +21,7 @@
   <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" style="height:50vh">
     <l-geo-json v-model="geojson" v-if="show" :geojson="geojson" :options="geojsonOptions" />
     <l-tile-layer
+      v-if="show_basemap"
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       layer-type="base"
       name="OpenStreetMap"
@@ -34,9 +42,9 @@
     @close="toggleModalState"
   >
     <teleport to="#modal-wrapper"> 
-      <p>A list of options</p>
-      <p>Marker Coordinates: {{ GPScoordinates }}</p>
-      <p>GeoJson: {{ geojson }}</p>
+      <p class="text-gray-500">A list of options</p>
+      <p class="text-gray-500">Marker Coordinates: {{ GPScoordinates }}</p>
+      <p class="text-gray-500">GeoJson: {{ geojson }}</p>
     </teleport>
   </modal>
 
@@ -62,6 +70,7 @@ export default {
     return {
       modalOpen: true,
       show: true,
+      show_basemap: true,
       zoom: 2,
       geojson: {
 
