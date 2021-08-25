@@ -1,21 +1,30 @@
 <template>
 
-  <!-- GeoJSON toggle -->
-  <label for="checkbox">GeoJSON Visibility</label>
-  <input
-    id="checkbox"
-    v-model="show"
-    type="checkbox"
-  >
+  <div class="flex space-x-1 m-0.5">
+    <!-- GeoJSON toggle -->
+    <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mt-1 mb-1 shadow rounded-sm">
+     <label for="geojson_layer">GeoJson</label>
 
-  <!-- Basemap Visibility -->
-  <label for="checkbox">Basemap Visibility</label>
-  <input
-    id="checkbox_basemap"
-    v-model="show_basemap"
-    type="checkbox"
-  >
+      <input
+        id="geojson_layer"
+        v-model="show_geoJson"
+        class="appearance-none checked:bg-green-100"
+        type="checkbox"
+      >
+    </div>
 
+    <!-- Basemap Visibility -->
+    <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mt-1 mb-1 shadow rounded-sm">
+      <label for="checkbox_basemap">Basemap Visibility</label>
+
+      <input
+        id="checkbox_basemap"
+        v-model="show_basemap"
+        class="appearance-none checked:bg-green-100"
+        type="checkbox"
+      >
+    </div>
+  </div>
 <!-- Define map box -->
 
   <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" style="height:50vh">
@@ -34,10 +43,18 @@
 
   <!-- Interactivity buttons -->
 
-  <button @click="addGPSPoint()">Add GPS</button>
-  <button @click="pushGPStoGeoJSON(), refreshGeoJSON()">Add to Layer</button>
-  
-  <button @click="toggleModalState">Debug</button>
+  <div class="flex flex-wrap m-0.5">
+    <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
+      <button @click="addGPSPoint()">Add GPS</button>
+    </div>
+    <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
+      <button @click="pushGPStoGeoJSON(), refreshGeoJSON()">Add to Layer</button>
+    </div>
+    
+    <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
+      <button @click="toggleModalState">Debug</button>
+    </div>
+  </div>
   <modal 
     v-if="modalOpen"
     @close="toggleModalState"
@@ -54,10 +71,13 @@
 
 <script>
   import {ref, onBeforeMount} from 'vue';
+  import Modal from "../components/Modal.vue";
   import { LMap, LTileLayer, LGeoJson, LMarker} from "@vue-leaflet/vue-leaflet";
   export default {
 
     components: {
+      Modal,
+      //leaflet
       LMap,
       LTileLayer,
       LGeoJson,
@@ -75,7 +95,7 @@
       const show_basemap = ref(true);
       const zoom = ref(2);
       const GPScoordinates = ref(null);
-      var geojson =  {
+      var geojson =  ref({
 
         type: "FeatureCollection",
 
@@ -92,7 +112,7 @@
             }
           }
         ],
-      };
+      });
       var geojsonOptions = {
         //can't use leaflet methods in here
         style: {
@@ -112,26 +132,25 @@
         GPScoordinates.value = [50,50];
       };
       const pushGPStoGeoJSON = () => {
-        // //add to geojson
-        // fixBigCoordinates().geojson.features.push(
-        //   {
-        //     "type" : "Feature", 
-        //     "properties" : {  
-        //       "dataType" : "lat lng coordinate", 
-        //       "notes"    : "user data"
-        //     }, 
-        //     "geometry" : { 
-        //       "type" : "Point", 
-        //       "coordinates" : [this.GPScoordinates.lng, this.GPScoordinates.lat], 
-        //     }
-        //   }
-        // );
+        //add to geojson
+        geojson.value.features.push(
+          {
+            "type" : "Feature", 
+            "properties" : {  
+              "dataType" : "lat lng coordinate", 
+              "notes"    : "user data"
+            }, 
+            "geometry" : { 
+              "type" : "Point", 
+              "coordinates" : [GPScoordinates.value.lng, GPScoordinates.value.lat], 
+            }
+          }
+        );
       };
       const refreshGeoJSON = () => {
-        // this.show = false;
-        // this.show = true;
+        ref.map.removeLayer();
       };
-      const fixBigCoordinates = () => {
+      function fixBigCoordinates() {
         // if(GPScoordinates === null) {
         //   return this;
         // }
@@ -147,12 +166,12 @@
         // }
 
         return this;
-      };
+      }
 
       onBeforeMount( async ()=>{
         console.log('onBeforeMount');
         const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
-        ref.geojsonOptions.pointToLayer = (feature, latLng) => circleMarker(latLng, { radius: 8 });
+        geojsonOptions.pointToLayer = (feature, latLng) => circleMarker(latLng, { radius: 8 });
         ref.mapIsReady = true;
       })
 

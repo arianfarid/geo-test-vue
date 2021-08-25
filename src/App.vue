@@ -5,9 +5,9 @@
     <router-link to="/map">Map</router-link> |
     <router-link to="/mainmap">Main Map</router-link>
   </div>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
   <router-view/>
 </template>
-
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
