@@ -32,7 +32,7 @@
 <!-- Define map box -->
 
   <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" style="height:50vh">
-    <l-geo-json ref="geojson" v-model="geojson" v-if="show_geoJson" :geojson="geojson_data" :options="geojsonOptions" />
+    <l-geo-json ref="geojson" v-if="show_geoJson" :geojson="geojson_data" :options="geojsonOptions" />
     <l-tile-layer
       v-if="show_basemap"
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -70,7 +70,7 @@
     <teleport to="#modal-wrapper"> 
       <p class="text-gray-500">A list of options</p>
       <p class="text-gray-500">Marker Coordinates: {{ GPScoordinates }}</p>
-      <p class="text-gray-500">GeoJson: {{ geojson }}</p>
+      <p class="text-gray-500">GeoJson: {{ geojson_data }}</p>
     </teleport>
   </modal>
 
@@ -168,7 +168,6 @@
           }
         );
 
-        // ref.geojson.addData(geojson_data);
         console.log("pushed data");
       };
       const refreshGeoJSON = () => {
@@ -218,7 +217,9 @@
         //map properties
         zoom, GPScoordinates, show_geoJson, show_basemap, geojson_data, geojsonOptions,
         //methods
-        toggleModalState, updateCoordinates, addGPSPoint, pushGPStoGeoJSON, refreshGeoJSON, fixBigCoordinates
+        toggleModalState, updateCoordinates, addGPSPoint, pushGPStoGeoJSON, refreshGeoJSON, fixBigCoordinates,
+        //modal
+        modalOpen
       }
 
     }
