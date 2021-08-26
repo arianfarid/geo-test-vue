@@ -78,7 +78,7 @@
 </template>
 
 <script>
-  import {ref, onBeforeMount, onMounted} from 'vue';
+  import {ref, watch, onBeforeMount, onMounted} from 'vue';
   import Modal from "../components/Modal.vue";
   import { LMap, LTileLayer, LGeoJson, LMarker} from "@vue-leaflet/vue-leaflet";
   export default {
@@ -168,7 +168,8 @@
           }
         );
 
-        ref.geojson;
+        // ref.geojson.addData(geojson_data);
+        console.log("pushed data");
       };
       const refreshGeoJSON = () => {
         // ref.map.removeLayer();
@@ -205,6 +206,12 @@
       onMounted( async ()=>{
         console.log('onMounted');
         // ref.geojson.addData();
+      })
+
+      watch(geojson_data.value, async ()=>{
+        console.log('watched geojson button add');
+        const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
+        geojsonOptions.pointToLayer = (feature, latLng) => circleMarker(latLng, {radius: 8});
       })
 
       return {
