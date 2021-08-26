@@ -32,7 +32,7 @@
 <!-- Define map box -->
 
   <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" style="height:50vh">
-    <l-geo-json ref="geojson" v-if="show_geoJson" :geojson="geojson_data" :options="geojsonOptions" />
+    <l-geo-json ref="geojson" v-if="show_geoJson" :geojson="geojson_data" :options="geojson_options" />
     <l-tile-layer
       v-if="show_basemap"
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -121,7 +121,7 @@
           }
         ],
       });
-      var geojsonOptions = {
+      var geojson_options = {
         //can't use leaflet methods in here
         style: {
           "color": "#ff7800",
@@ -196,7 +196,7 @@
         
         //style geojson
         const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
-        geojsonOptions.pointToLayer = (feature, latLng) => circleMarker(latLng, { radius: 8 });
+        geojson_options.pointToLayer = (feature, latLng) => circleMarker(latLng, { radius: 8 });
         
         //initialize map
         ref.mapIsReady = true;
@@ -210,12 +210,14 @@
       watch(geojson_data.value, async ()=>{
         console.log('watched geojson button add');
         const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
-        geojsonOptions.pointToLayer = (feature, latLng) => circleMarker(latLng, {radius: 8});
+        geojson_options.pointToLayer = (feature, latLng) => circleMarker(latLng, {radius: 8});
+
+        LGeoJson(geojson_data.value, {pointToLayer: function(feature, latLng) {circleMarker(latLng, {radius: 8})}})
       })
 
       return {
         //map properties
-        zoom, GPScoordinates, show_geoJson, show_basemap, geojson_data, geojsonOptions,
+        zoom, GPScoordinates, show_geoJson, show_basemap, geojson_data, geojson_options,
         //methods
         toggleModalState, updateCoordinates, addGPSPoint, pushGPStoGeoJSON, refreshGeoJSON, fixBigCoordinates,
         //modal
