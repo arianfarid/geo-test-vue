@@ -169,6 +169,7 @@
         );
 
         console.log("pushed data");
+        show_geoJson.value = !show_geoJson.value;
       };
       const refreshGeoJSON = () => {
         // ref.map.removeLayer();
@@ -212,7 +213,7 @@
         const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
         geojson_options.pointToLayer = (feature, latLng) => circleMarker(latLng, {radius: 8});
 
-        LGeoJson(geojson_data.value, {pointToLayer: function(feature, latLng) {circleMarker(latLng, {radius: 8})}})
+        show_geoJson.value = !show_geoJson.value;
       })
 
       return {
