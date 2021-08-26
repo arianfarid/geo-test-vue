@@ -1,34 +1,38 @@
 <template>
 
-  <div class="flex space-x-1 m-0.5">
-    <!-- GeoJSON toggle -->
-    <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mt-1 mb-1 shadow rounded-sm">
-     <label for="geojson_layer">GeoJson</label>
+  <!-- Map Menu Items -->
+  <div class="grid grid-rows-1 grid-flow-col justify-items-center">
+    <div class="flex space-x-1 m-0.5 ">
+      <!-- GeoJSON toggle -->
+      <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mt-1 mb-1 shadow rounded-sm">
+       <label for="geojson_layer">GeoJson</label>
 
-      <input
-        id="geojson_layer"
-        v-model="show_geoJson"
-        class="appearance-none checked:bg-green-100"
-        type="checkbox"
-      >
-    </div>
+        <input
+          id="geojson_layer"
+          v-model="show_geoJson"
+          class="appearance-none checked:bg-green-100"
+          type="checkbox"
+        >
+      </div>
 
-    <!-- Basemap Visibility -->
-    <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mt-1 mb-1 shadow rounded-sm">
-      <label for="checkbox_basemap">Basemap Visibility</label>
+      <!-- Basemap Visibility -->
+      <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mt-1 mb-1 shadow rounded-sm">
+        <label for="checkbox_basemap">Basemap Visibility</label>
 
-      <input
-        id="checkbox_basemap"
-        v-model="show_basemap"
-        class="appearance-none checked:bg-green-100"
-        type="checkbox"
-      >
+        <input
+          id="checkbox_basemap"
+          v-model="show_basemap"
+          class="appearance-none checked:bg-green-100"
+          type="checkbox"
+        >
+      </div>
     </div>
   </div>
+
 <!-- Define map box -->
 
   <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" style="height:50vh">
-    <l-geo-json v-model="geojson" v-if="show_geoJson" :geojson="geojson" :options="geojsonOptions" />
+    <l-geo-json ref="geojson" v-model="geojson" v-if="show_geoJson" :geojson="geojson_data" :options="geojsonOptions" />
     <l-tile-layer
       v-if="show_basemap"
       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -43,18 +47,22 @@
 
   <!-- Interactivity buttons -->
 
-  <div class="flex flex-wrap m-0.5">
-    <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
-      <button @click="addGPSPoint()">Add GPS</button>
-    </div>
-    <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
-      <button @click="pushGPStoGeoJSON(), refreshGeoJSON()">Add to Layer</button>
-    </div>
-    
-    <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
-      <button @click="toggleModalState">Debug</button>
+  <div class="grid grid-rows-1 grid-flow-col justify-items-center">
+    <div class="flex flex-wrap m-0.5 ">
+      <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
+        <button @click="addGPSPoint()">Add GPS</button>
+      </div>
+      <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
+        <button @click="pushGPStoGeoJSON(), refreshGeoJSON()">Add to Layer</button>
+      </div>
+      
+      <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
+        <button @click="toggleModalState">Debug</button>
+      </div>
     </div>
   </div>
+
+
   <modal 
     v-if="modalOpen"
     @close="toggleModalState"
@@ -70,7 +78,7 @@
 </template>
 
 <script>
-  import {ref, onBeforeMount} from 'vue';
+  import {ref, onBeforeMount, onMounted} from 'vue';
   import Modal from "../components/Modal.vue";
   import { LMap, LTileLayer, LGeoJson, LMarker} from "@vue-leaflet/vue-leaflet";
   export default {
@@ -95,7 +103,7 @@
       const show_basemap = ref(true);
       const zoom = ref(2);
       const GPScoordinates = ref(null);
-      var geojson =  ref({
+      var geojson_data =  ref({
 
         type: "FeatureCollection",
 
@@ -133,7 +141,20 @@
       };
       const pushGPStoGeoJSON = () => {
         //add to geojson
-        geojson.value.features.push(
+        
+        // let geoJsonData = {
+        //     "type" : "Feature", 
+        //     "properties" : {  
+        //       "dataType" : "lat lng coordinate", 
+        //       "notes"    : "user data"
+        //     }, 
+        //     "geometry" : { 
+        //       "type" : "Point", 
+        //       "coordinates" : [GPScoordinates.value.lng, GPScoordinates.value.lat], 
+        //     }
+        //   };
+
+        geojson_data.value.features.push(
           {
             "type" : "Feature", 
             "properties" : {  
@@ -146,9 +167,11 @@
             }
           }
         );
+
+        ref.geojson;
       };
       const refreshGeoJSON = () => {
-        ref.map.removeLayer();
+        // ref.map.removeLayer();
       };
       function fixBigCoordinates() {
         // if(GPScoordinates === null) {
@@ -170,14 +193,23 @@
 
       onBeforeMount( async ()=>{
         console.log('onBeforeMount');
+        
+        //style geojson
         const { circleMarker } = await import("leaflet/dist/leaflet-src.esm");
         geojsonOptions.pointToLayer = (feature, latLng) => circleMarker(latLng, { radius: 8 });
+        
+        //initialize map
         ref.mapIsReady = true;
+      })
+
+      onMounted( async ()=>{
+        console.log('onMounted');
+        // ref.geojson.addData();
       })
 
       return {
         //map properties
-        zoom, GPScoordinates, show_geoJson, show_basemap, geojson, geojsonOptions,
+        zoom, GPScoordinates, show_geoJson, show_basemap, geojson_data, geojsonOptions,
         //methods
         toggleModalState, updateCoordinates, addGPSPoint, pushGPStoGeoJSON, refreshGeoJSON, fixBigCoordinates
       }
