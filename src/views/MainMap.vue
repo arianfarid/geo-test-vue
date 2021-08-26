@@ -3,6 +3,19 @@
   <!-- Map Menu Items -->
   <div class="grid grid-rows-1 grid-flow-col justify-items-center">
     <div class="flex space-x-1 m-0.5 ">
+
+      <!-- Layers Dropdown -->
+      <Dropdown>
+        <template v-slot:toggler>
+          <button class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mt-1 mb-1 shadow rounded-sm"
+          @click="toggle"
+          >Toggle</button>
+        </template>
+        <DropdownContent>
+          <button>Example</button>
+        </DropdownContent>
+      </Dropdown>
+
       <!-- GeoJSON toggle -->
       <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mt-1 mb-1 shadow rounded-sm">
        <label for="geojson_layer">GeoJson</label>
@@ -80,11 +93,15 @@
 <script>
   import {ref, watch, onBeforeMount, onMounted} from 'vue';
   import Modal from "../components/Modal.vue";
+  import Dropdown from "../components/Dropdown.vue";
+  import DropdownContent from "../components/DropdownContent.vue";
   import { LMap, LTileLayer, LGeoJson, LMarker} from "@vue-leaflet/vue-leaflet";
   export default {
 
     components: {
       Modal,
+      Dropdown,
+      DropdownContent,
       //leaflet
       LMap,
       LTileLayer,
@@ -97,7 +114,6 @@
     },
 
     setup() {
-
       const modalOpen = ref(true);
       const show_geoJson = ref(true);
       const show_basemap = ref(true);
