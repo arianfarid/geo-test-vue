@@ -1,7 +1,7 @@
 <template>
 
   <!-- Map Menu Items -->
-  <div class="grid grid-rows-1 grid-flow-col justify-items-center">
+  <div class="grid grid-rows-1 grid-flow-col justify-items-center bg-gray-100">
     <div class="flex space-x-1 m-0.5 ">
 
       <!-- Layers Dropdown -->
