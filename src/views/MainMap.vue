@@ -115,11 +115,6 @@
       LGeoJson,
       LMarker
     },
-
-    props: {
-
-    },
-
     setup() {
 
 
@@ -222,7 +217,8 @@
       const show_form_modal = ref(false);
       provide("show_form_modal", show_form_modal);
       provide("GPScoordinates", GPScoordinates);
-      provide("geojson_data", geojson_data)
+      provide("geojson_data", geojson_data);
+      provide("geojson_options");
       const openFormModal = () => {
         show_form_modal.value =!show_form_modal.value;
       };
