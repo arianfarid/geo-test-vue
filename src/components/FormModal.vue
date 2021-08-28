@@ -15,11 +15,12 @@
                 <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                   <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
                      
-
+                     <button v-if="!hideMap" @click="hideMap=true">Hide Map</button>
+                     <button v-if="hideMap" @click="hideMap=false">Show Map</button>
 
                      <!-- Map -->
-                     <l-map ref="mapFormModal" :zoom="5" :center="[GPScoordinates.lat, GPScoordinates.lng]" style="z-index:15; height:20vh" dragging="false">
-                        <l-geo-json ref="geojson" :geojson="geojson_data.features" :options="geojson_options" />
+                     <l-map v-if="!hideMap" ref="mapFormModal" :zoom="5" :center="[GPScoordinates.lat, GPScoordinates.lng]" style="z-index:15; height:20vh" dragging="false">
+                        <l-geo-json ref="geojson" :geojson="geojson_data.features" :options="geojson_options"/>
                         <l-tile-layer
                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                            layer-type="base"
@@ -38,9 +39,9 @@
                 </div>
               </div>
             </div>
-            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <div class="flex bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
               <button type="button" 
-              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                 Save
               </button>
                <button type="button" 
@@ -74,6 +75,7 @@
          const GPScoordinates = inject('GPScoordinates');
          const geojson_data = inject('geojson_data');
          const geojson_options = inject('geojson_options');
+         const hideMap = ref(false);
 
          onBeforeMount( async ()=>{
             console.log('FormModal onBeforeMount');
@@ -87,7 +89,7 @@
          });
 
          return {
-            isOpen, GPScoordinates, geojson_data,
+            isOpen, GPScoordinates, geojson_data, hideMap,
 
             LMap, LTileLayer, LGeoJson
          }
