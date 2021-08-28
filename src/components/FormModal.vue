@@ -18,6 +18,8 @@
                      <button v-if="!hideMap" @click="hideMap=true">Hide Map</button>
                      <button v-if="hideMap" @click="hideMap=false">Show Map</button>
 
+                     <!-- Hi rose -->
+
                      <!-- Map -->
                      <l-map v-if="!hideMap" ref="mapFormModal" :zoom="5" :center="[GPScoordinates.lat, GPScoordinates.lng]" style="z-index:15; height:20vh" dragging="false">
                         <l-geo-json ref="geojson" :geojson="geojson_data.features" :options="geojson_options"/>
