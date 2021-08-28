@@ -1,5 +1,9 @@
 <template>
 
+  <!-- Form Modal -->
+  <form-modal @click="openFormModal()">
+  </form-modal>
+
   <!-- Map Menu Items -->
   <div class="grid grid-rows-1 grid-flow-col justify-items-center bg-gray-100">
     <div class="flex space-x-1 m-0.5 ">
@@ -44,7 +48,7 @@
 
 <!-- Define map box -->
 
-  <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" style="height:50vh">
+  <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" style="z-index:5; height:50vh">
     <l-geo-json ref="geojson" v-if="show_geoJson" :geojson="geojson_data" :options="geojson_options" />
     <l-tile-layer
       v-if="show_basemap"
@@ -66,7 +70,7 @@
         <button @click="addGPSPoint()">Add GPS</button>
       </div>
       <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
-        <button @click="pushGPStoGeoJSON(), refreshGeoJSON()">Add to Layer</button>
+        <button @click="openFormModal(), pushGPStoGeoJSON()">Add to Layer</button>
       </div>
       
       <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
@@ -81,7 +85,8 @@
     @close="toggleModalState"
   >
     <teleport to="#modal-wrapper"> 
-      <p class="text-gray-500">A list of options</p>
+      <p class="text-gray-500">A list of debug info</p>
+      <p class="text=gray-500">Form Modal Open:  {{ show_form_modal }} </p>
       <p class="text-gray-500">Marker Coordinates: {{ GPScoordinates }}</p>
       <p class="text-gray-500">GeoJson: {{ geojson_data }}</p>
     </teleport>
@@ -91,8 +96,9 @@
 </template>
 
 <script>
-  import {ref, watch, onBeforeMount, onMounted} from 'vue';
+  import {ref, watch, provide, onBeforeMount, onMounted} from 'vue';
   import Modal from "../components/Modal.vue";
+  import FormModal from "../components/FormModal.vue";
   import Dropdown from "../components/Dropdown.vue";
   import DropdownContent from "../components/DropdownContent.vue";
   import { LMap, LTileLayer, LGeoJson, LMarker} from "@vue-leaflet/vue-leaflet";
@@ -100,6 +106,7 @@
 
     components: {
       Modal,
+      FormModal,
       Dropdown,
       DropdownContent,
       //leaflet
@@ -114,6 +121,8 @@
     },
 
     setup() {
+
+
       const modalOpen = ref(true);
       const show_geoJson = ref(true);
       const show_basemap = ref(true);
@@ -208,6 +217,16 @@
         return this;
       }
 
+
+      //Form modal items
+      const show_form_modal = ref(false);
+      provide("show_form_modal", show_form_modal);
+      provide("GPScoordinates", GPScoordinates);
+      provide("geojson_data", geojson_data)
+      const openFormModal = () => {
+        show_form_modal.value =!show_form_modal.value;
+      };
+
       onBeforeMount( async ()=>{
         console.log('onBeforeMount');
         
@@ -236,9 +255,9 @@
         //map properties
         zoom, GPScoordinates, show_geoJson, show_basemap, geojson_data, geojson_options,
         //methods
-        toggleModalState, updateCoordinates, addGPSPoint, pushGPStoGeoJSON, refreshGeoJSON, fixBigCoordinates,
+        openFormModal, toggleModalState, updateCoordinates, addGPSPoint, pushGPStoGeoJSON, refreshGeoJSON, fixBigCoordinates,
         //modal
-        modalOpen
+        show_form_modal, modalOpen
       }
 
     }
