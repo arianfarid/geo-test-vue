@@ -4,37 +4,49 @@
             <div class="font-bold">
                 <h3>{{title}} Active Layer</h3>
             </div>
-            <div class="text-gray-400">
+            <div class="text-gray-400 text-sm">
                 <div>{{GPScoordinates.lat}}, {{GPScoordinates.lng}}</div>
             </div>
-
-            <form-input-text input_name="Test"></form-input-text>
-            
+            <br>
+            <form-input v-for="input in form_inputs" v-bind:key="input.id" v-bind:input_name="input.input_name" v-bind:input_type="input.input_type" :required="input.is_required" v-bind:is_required="input.is_required"></form-input>
             <div class="flex flex-initial">
-                <gray-button></gray-button>
+                <button-gray></button-gray>
+            </div>
+            <div class="flex flex-initial">
+                <button-save @click="pushGPStoGeoJSON(), toggleSlideUpForm()"></button-save>
             </div>
         </div>
     </div>
 </template>
 <script>
 import { inject } from 'vue';
-import GrayButton from "../components/GrayButton.vue";
-import FormInputText from "../components/FormInputText.vue"
+import ButtonSave from "../components/ButtonSave.vue"
+import FormInput from "../components/FormInput.vue"
+import ButtonGray from "../components/ButtonGray.vue";
+
+
 export default {
     components: {
 
         //form items
-        FormInputText,
-        GrayButton
+        FormInput,
+        ButtonGray,
+        ButtonSave,
     },
     props: {
         title: String,
     },
     setup() {
         const GPScoordinates = inject('GPScoordinates');
+        const form_inputs = inject('form_inputs');
+        const pushGPStoGeoJSON = inject('pushGPStoGeoJSON');
+        const toggleSlideUpForm = inject('toggleSlideUpForm');
 
         return {
-            GPScoordinates
+            GPScoordinates,
+            form_inputs,
+            pushGPStoGeoJSON,
+            toggleSlideUpForm,
         }
     }
 }

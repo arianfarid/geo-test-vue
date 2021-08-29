@@ -41,7 +41,7 @@
                 <button @click="addGPSPoint()">Add GPS</button>
             </div>
             <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
-                <button @click="toggleSlideUpForm(), pushGPStoGeoJSON()">Add to Layer</button>
+                <button @click="toggleSlideUpForm()">Add to Layer</button>
             </div>
             <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
                 <button @click="toggleModalState">Debug</button>
@@ -110,24 +110,10 @@ export default {
         };
         const pushGPStoGeoJSON = () => {
             //add to geojson
-
-            // let geoJsonData = {
-            //     "type" : "Feature", 
-            //     "properties" : {  
-            //       "dataType" : "lat lng coordinate", 
-            //       "notes"    : "user data"
-            //     }, 
-            //     "geometry" : { 
-            //       "type" : "Point", 
-            //       "coordinates" : [GPScoordinates.value.lng, GPScoordinates.value.lat], 
-            //     }
-            //   };
-
             geojson_data.value.features.push({
                 "type": "Feature",
                 "properties": {
-                    "dataType": "lat lng coordinate",
-                    "notes": "user data"
+
                 },
                 "geometry": {
                     "type": "Point",
@@ -138,9 +124,7 @@ export default {
             console.log("pushed data");
             show_geoJson.value = !show_geoJson.value;
         };
-        const refreshGeoJSON = () => {
-            // ref.map.removeLayer();
-        };
+        provide('pushGPStoGeoJSON', pushGPStoGeoJSON);
 
         function fixBigCoordinates() {
             // if(GPScoordinates === null) {
@@ -176,6 +160,30 @@ export default {
         const toggleSlideUpForm = () => {
             show_slide_up_form.value = !show_slide_up_form.value;
         }
+        provide("toggleSlideUpForm", toggleSlideUpForm)
+        const form_inputs = [
+          {
+            id: 1,
+            is_required: true,
+            input_name: "Tree Species",
+            input_type: "text",
+          },
+          {
+            id: 2,
+            is_required: false,
+            input_name: "Date Planted",
+            input_type: "date",
+          },
+          {
+            id: 3,
+            is_required: true,
+            input_name: "Alive",
+            input_type: "checkbox",
+          }
+        ];
+
+        provide("form_inputs",form_inputs);
+
 
         onBeforeMount(async () => {
             console.log('onBeforeMount');
@@ -209,14 +217,15 @@ export default {
             show_basemap,
             geojson_data,
             geojson_options,
+
             //methods
             openFormModal,
             updateCoordinates,
             addGPSPoint,
             pushGPStoGeoJSON,
-            refreshGeoJSON,
             fixBigCoordinates,
             toggleSlideUpForm,
+
             //modal
             show_form_modal,
             show_slide_up_form

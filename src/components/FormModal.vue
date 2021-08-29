@@ -41,7 +41,10 @@
                       show_geoJson_form_modal = {{ show_geoJson_form_modal }}
                      </p>
                      <p>
-                        <gray-button>  </gray-button>
+                        <button-gray></button-gray>
+                     </p>
+                     <p>
+                        
                      </p>
                   </div>
                 </div>
@@ -69,7 +72,7 @@
 <script>
    import {ref, inject, watch, onBeforeMount} from 'vue'
    import { LMap, LTileLayer, LMarker} from "@vue-leaflet/vue-leaflet";
-   import GrayButton from "../components/GrayButton.vue"
+
 
    export default{
 
@@ -80,7 +83,7 @@
          LMarker,
 
          //form template items
-         GrayButton,
+
        },
 
       setup() {
