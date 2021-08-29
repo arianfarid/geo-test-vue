@@ -1,7 +1,7 @@
 <template>
 
   <!-- Form Modal -->
-  <form-modal @click="openFormModal()">
+  <form-modal>
   </form-modal>
 
   <!-- Map Menu Items -->
@@ -48,7 +48,7 @@
 
 <!-- Define map box -->
 
-  <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" style="z-index:5; height:50vh">
+  <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" style="z-index:5; height:30vh">
     <l-geo-json ref="geojson" v-if="show_geoJson" :geojson="geojson_data" :options="geojson_options" />
     <l-tile-layer
       v-if="show_basemap"
@@ -70,7 +70,7 @@
         <button @click="addGPSPoint()">Add GPS</button>
       </div>
       <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
-        <button @click="openFormModal(), pushGPStoGeoJSON()">Add to Layer</button>
+        <button @click="toggleSlideUpForm(), pushGPStoGeoJSON()">Add to Layer</button>
       </div>
       
       <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
@@ -80,35 +80,25 @@
   </div>
 
 
-  <modal 
-    v-if="modalOpen"
-    @close="toggleModalState"
-  >
-    <teleport to="#modal-wrapper"> 
-      <p class="text-gray-500">A list of debug info</p>
-      <p class="text=gray-500">Form Modal Open:  {{ show_form_modal }} </p>
-      <p class="text-gray-500">Marker Coordinates: {{ GPScoordinates }}</p>
-      <p class="text-gray-500">GeoJson: {{ geojson_data }}</p>
-    </teleport>
-  </modal>
-
+  <!-- Slide Up Form -->
+  <slide-up-form v-if="show_slide_up_form" title="Add Point to "></slide-up-form>
 
 </template>
 
 <script>
   import {ref, watch, provide, onBeforeMount, onMounted} from 'vue';
-  import Modal from "../components/Modal.vue";
   import FormModal from "../components/FormModal.vue";
   import Dropdown from "../components/Dropdown.vue";
   import DropdownContent from "../components/DropdownContent.vue";
+  import SlideUpForm from "../components/SlideUpForm.vue";
   import { LMap, LTileLayer, LGeoJson, LMarker} from "@vue-leaflet/vue-leaflet";
   export default {
 
     components: {
-      Modal,
       FormModal,
       Dropdown,
       DropdownContent,
+      SlideUpForm,
       //leaflet
       LMap,
       LTileLayer,
@@ -117,8 +107,6 @@
     },
     setup() {
 
-
-      const modalOpen = ref(true);
       const show_geoJson = ref(true);
       const show_basemap = ref(true);
       const zoom = ref(2);
@@ -150,9 +138,6 @@
         },
       };
 
-      const toggleModalState = () => {
-        modalOpen.value = !modalOpen.value;
-      };
       const updateCoordinates = (e) => {
         GPScoordinates.value = e.latlng;
       };
@@ -223,6 +208,12 @@
         show_form_modal.value =!show_form_modal.value;
       };
 
+      //slide up form items
+      const show_slide_up_form =ref(false);
+      const toggleSlideUpForm = () => {
+        show_slide_up_form.value =!show_slide_up_form.value;
+      }
+
       onBeforeMount( async ()=>{
         console.log('onBeforeMount');
         
@@ -251,9 +242,10 @@
         //map properties
         zoom, GPScoordinates, show_geoJson, show_basemap, geojson_data, geojson_options,
         //methods
-        openFormModal, toggleModalState, updateCoordinates, addGPSPoint, pushGPStoGeoJSON, refreshGeoJSON, fixBigCoordinates,
+        openFormModal, updateCoordinates, addGPSPoint, pushGPStoGeoJSON, refreshGeoJSON, fixBigCoordinates,
+        toggleSlideUpForm,
         //modal
-        show_form_modal, modalOpen
+        show_form_modal, show_slide_up_form
       }
 
     }
