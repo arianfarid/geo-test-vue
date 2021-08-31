@@ -10,10 +10,11 @@
             </div>
             <br><br>
             <div v-for="input in form_inputs" v-bind:key="input.id">
+
                 <p>
                     {{input.form_value}}
                 </p>
-                <form-input :model-value="form_inputs_data[input]"  @update:model-value="form_inputs_data[input] = $event" v-bind:input_name="input.input_name" v-bind:input_type="input.input_type" v-bind:is_required="input.is_required"></form-input>
+                <form-input :model-value="form_inputs_data[input]" v-bind:input_id="input.id" v-bind:input_name="input.input_name" v-bind:input_type="input.input_type" v-bind:is_required="input.is_required" @form-input-change="pushFormInputDataToGeoJson($event)"></form-input>
             </div>
             {{form_inputs_data}}
             <div class="flex flex-initial">
@@ -30,7 +31,6 @@ import { inject, reactive } from 'vue';
 import ButtonSave from "../components/ButtonSave.vue"
 import FormInput from "../components/FormInput.vue"
 import ButtonGray from "../components/ButtonGray.vue";
-
 
 export default {
     components: {
@@ -49,9 +49,9 @@ export default {
         const toggleSlideUpForm = inject('toggleSlideUpForm');
         // const form_inputs_data = inject('form_inputs_data');
         const form_inputs_data = reactive([]);
-        const pushFormInputDataToGeoJson = () => {
-            form_inputs_data.value.push(...form_inputs)
-            console.log(form_inputs_data);
+        const pushFormInputDataToGeoJson = (event) => {
+            // form_inputs_data.value.push(...form_inputs)
+            console.log(event);
         }
 
         return {
