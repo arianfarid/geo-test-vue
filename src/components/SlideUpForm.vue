@@ -10,18 +10,17 @@
             </div>
             <br><br>
             <div v-for="input in form_inputs" v-bind:key="input.id">
-
                 <p>
                     {{input.form_value}}
                 </p>
-                <form-input :model-value="form_inputs_data[input]" v-bind:input_id="input.id" v-bind:input_name="input.input_name" v-bind:input_type="input.input_type" v-bind:is_required="input.is_required" @form-input-change="pushFormInputDataToGeoJson($event)"></form-input>
+                <form-input :model-value="form_inputs_data[input]" v-bind:input_id="input.id" v-bind:input_name="input.input_name" v-bind:input_type="input.input_type" v-bind:is_required="input.is_required" @form-input-change="logFormInputData($event)"></form-input>
             </div>
             {{form_inputs_data}}
             <div class="flex flex-initial">
                 <button-gray></button-gray>
             </div>
             <div class="flex flex-initial">
-                <button-save @click="pushGPStoGeoJSON(), pushFormInputDataToGeoJson()"></button-save>
+                <button-save @click="pushGPStoGeoJSON(), logFormInputData(), consoleLogFormInputsData()"></button-save>
             </div>
         </div>
     </div>
@@ -49,9 +48,13 @@ export default {
         const toggleSlideUpForm = inject('toggleSlideUpForm');
         // const form_inputs_data = inject('form_inputs_data');
         const form_inputs_data = reactive([]);
-        const pushFormInputDataToGeoJson = (event) => {
+        const logFormInputData = (event) => {
             // form_inputs_data.value.push(...form_inputs)
             console.log(event);
+            form_inputs_data[(event.id - 1)] = event.value;
+        }
+        const consoleLogFormInputsData = () => {
+            console.log(form_inputs_data);
         }
 
         return {
@@ -60,7 +63,8 @@ export default {
             form_inputs_data,
             pushGPStoGeoJSON,
             toggleSlideUpForm,
-            pushFormInputDataToGeoJson
+            logFormInputData,
+            consoleLogFormInputsData
         }
     }
 }
