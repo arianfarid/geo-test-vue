@@ -6,20 +6,27 @@
             </div>
             <div class="text-gray-400 text-sm">
                 <div>{{GPScoordinates.lat}}, {{GPScoordinates.lng}}</div>
+                <div> {{form_inputs_data.value}} </div>
             </div>
-            <br>
-            <form-input v-for="input in form_inputs" v-bind:key="input.id" v-bind:input_name="input.input_name" v-bind:input_type="input.input_type" :required="input.is_required" v-bind:is_required="input.is_required"></form-input>
+            <br><br>
+            <div v-for="input in form_inputs" v-bind:key="input.id">
+                <p>
+                    {{input.form_value}}
+                </p>
+                <form-input :model-value="form_inputs_data[input]"  @update:model-value="form_inputs_data[input] = $event" v-bind:input_name="input.input_name" v-bind:input_type="input.input_type" :required="input.is_required" v-bind:is_required="input.is_required"></form-input>
+            </div>
+            {{form_inputs_data}}
             <div class="flex flex-initial">
                 <button-gray></button-gray>
             </div>
             <div class="flex flex-initial">
-                <button-save @click="pushGPStoGeoJSON(), toggleSlideUpForm()"></button-save>
+                <button-save @click="pushGPStoGeoJSON(), pushFormInputDataToGeoJson()"></button-save>
             </div>
         </div>
     </div>
 </template>
 <script>
-import { inject } from 'vue';
+import { inject, reactive } from 'vue';
 import ButtonSave from "../components/ButtonSave.vue"
 import FormInput from "../components/FormInput.vue"
 import ButtonGray from "../components/ButtonGray.vue";
@@ -27,7 +34,6 @@ import ButtonGray from "../components/ButtonGray.vue";
 
 export default {
     components: {
-
         //form items
         FormInput,
         ButtonGray,
@@ -41,12 +47,20 @@ export default {
         const form_inputs = inject('form_inputs');
         const pushGPStoGeoJSON = inject('pushGPStoGeoJSON');
         const toggleSlideUpForm = inject('toggleSlideUpForm');
+        // const form_inputs_data = inject('form_inputs_data');
+        const form_inputs_data = reactive([]);
+        const pushFormInputDataToGeoJson = () => {
+            form_inputs_data.value.push(...form_inputs)
+            console.log(form_inputs_data);
+        }
 
         return {
             GPScoordinates,
             form_inputs,
+            form_inputs_data,
             pushGPStoGeoJSON,
             toggleSlideUpForm,
+            pushFormInputDataToGeoJson
         }
     }
 }

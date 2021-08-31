@@ -1,8 +1,7 @@
 <template>
     <!-- Form Modal -->
-    <form-modal>
-    </form-modal>
 
+    {{ form_inputs_data }}
     <!-- Map Menu Items -->
     <div class="grid grid-rows-1 grid-flow-col justify-items-center bg-gray-100">
         <div class="flex space-x-1 m-0.5 ">
@@ -52,8 +51,8 @@
     <slide-up-form v-if="show_slide_up_form" title="Add Point to "></slide-up-form>
 </template>
 <script>
-import { ref, watch, provide, onBeforeMount, onMounted } from 'vue';
-import FormModal from "../components/FormModal.vue";
+import { ref, onBeforeMount, onMounted, provide, watch} from 'vue';
+// import FormModal from "../components/FormModal.vue";
 import Dropdown from "../components/Dropdown.vue";
 import DropdownContent from "../components/DropdownContent.vue";
 import SlideUpForm from "../components/SlideUpForm.vue";
@@ -61,7 +60,7 @@ import { LMap, LTileLayer, LGeoJson, LMarker } from "@vue-leaflet/vue-leaflet";
 export default {
 
     components: {
-        FormModal,
+        // FormModal,
         Dropdown,
         DropdownContent,
         SlideUpForm,
@@ -112,9 +111,7 @@ export default {
             //add to geojson
             geojson_data.value.features.push({
                 "type": "Feature",
-                "properties": {
-
-                },
+                "properties": "",//form_inputs_data,
                 "geometry": {
                     "type": "Point",
                     "coordinates": [GPScoordinates.value.lng, GPScoordinates.value.lat],
@@ -163,27 +160,30 @@ export default {
         provide("toggleSlideUpForm", toggleSlideUpForm)
         const form_inputs = [
           {
-            id: 1,
-            is_required: true,
-            input_name: "Tree Species",
-            input_type: "text",
+            "id": 1,
+            "is_required": true,
+            "input_name": "Tree Species",
+            "input_type": "text",
+            "form_value": '',
           },
           {
-            id: 2,
-            is_required: false,
-            input_name: "Date Planted",
-            input_type: "date",
+            "id": 2,
+            "is_required": false,
+            "input_name": "Date Planted",
+            "input_type": "date",
+            "form_value": '',
           },
           {
-            id: 3,
-            is_required: true,
-            input_name: "Alive",
-            input_type: "checkbox",
+            "id": 3,
+            "is_required": true,
+            "input_name": "Alive",
+            "input_type": "checkbox",
+            "form_value": '',
           }
         ];
-
         provide("form_inputs",form_inputs);
 
+        // provide("form_inputs_data",form_inputs_data);
 
         onBeforeMount(async () => {
             console.log('onBeforeMount');
@@ -228,7 +228,8 @@ export default {
 
             //modal
             show_form_modal,
-            show_slide_up_form
+            show_slide_up_form,
+
         }
 
     }
