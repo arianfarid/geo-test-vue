@@ -34,6 +34,7 @@
         <l-marker :lat-lng="GPScoordinates" draggable @move="updateCoordinates"></l-marker>
     </l-map>
     <!-- Interactivity buttons -->
+    
     <div class="grid grid-rows-1 grid-flow-col justify-items-center">
         <div class="flex flex-wrap m-0.5 ">
             <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">

@@ -13,7 +13,7 @@
                 <p>
                     {{input.form_value}}
                 </p>
-                <form-input :model-value="form_inputs_data[input]"  @update:model-value="form_inputs_data[input] = $event" v-bind:input_name="input.input_name" v-bind:input_type="input.input_type" :required="input.is_required" v-bind:is_required="input.is_required"></form-input>
+                <form-input :model-value="form_inputs_data[input]"  @update:model-value="form_inputs_data[input] = $event" v-bind:input_name="input.input_name" v-bind:input_type="input.input_type" v-bind:is_required="input.is_required"></form-input>
             </div>
             {{form_inputs_data}}
             <div class="flex flex-initial">
