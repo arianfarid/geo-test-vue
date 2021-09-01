@@ -1,7 +1,6 @@
 <template>
     <!-- Form Modal -->
 
-    {{ form_inputs_data }}
     <!-- Map Menu Items -->
     <div class="grid grid-rows-1 grid-flow-col justify-items-center bg-gray-100">
         <div class="flex space-x-1 m-0.5 ">
@@ -34,7 +33,7 @@
         <l-marker :lat-lng="GPScoordinates" draggable @move="updateCoordinates"></l-marker>
     </l-map>
     <!-- Interactivity buttons -->
-    
+
     <div class="grid grid-rows-1 grid-flow-col justify-items-center">
         <div class="flex flex-wrap m-0.5 ">
             <div class="flex-none bg-gray-200 hover:bg-gray-100 p-2 mr-0.5 ml-0.5 mb-1 mt-1 shadow rounded-sm">
@@ -50,9 +49,11 @@
     </div>
     <!-- Slide Up Form -->
     <slide-up-form v-if="show_slide_up_form" title="Add Point to "></slide-up-form>
+
+    {{ geojson_data }}
 </template>
 <script>
-import { ref, onBeforeMount, onMounted, provide, watch} from 'vue';
+import { ref, onBeforeMount, onMounted, provide, reactive, watch} from 'vue';
 // import FormModal from "../components/FormModal.vue";
 import Dropdown from "../components/Dropdown.vue";
 import DropdownContent from "../components/DropdownContent.vue";
@@ -112,7 +113,7 @@ export default {
             //add to geojson
             geojson_data.value.features.push({
                 "type": "Feature",
-                "properties": "",//form_inputs_data,
+                "properties": form_inputs,
                 "geometry": {
                     "type": "Point",
                     "coordinates": [GPScoordinates.value.lng, GPScoordinates.value.lat],
@@ -159,7 +160,7 @@ export default {
             show_slide_up_form.value = !show_slide_up_form.value;
         }
         provide("toggleSlideUpForm", toggleSlideUpForm)
-        const form_inputs = [
+        const form_inputs = reactive([
           {
             "id": 1,
             "is_required": true,
@@ -181,10 +182,16 @@ export default {
             "input_type": "checkbox",
             "form_value": '',
           }
-        ];
+        ]);
         provide("form_inputs",form_inputs);
 
-        // provide("form_inputs_data",form_inputs_data);
+        const updateFormInputsData = (data) => {
+          for (var i = 0; i < data.length; i++) {
+            form_inputs[i].form_value = data[i];
+          }
+        }
+        provide("updateFormInputsData", updateFormInputsData);
+
 
         onBeforeMount(async () => {
             console.log('onBeforeMount');
@@ -226,6 +233,7 @@ export default {
             pushGPStoGeoJSON,
             fixBigCoordinates,
             toggleSlideUpForm,
+            updateFormInputsData,
 
             //modal
             show_form_modal,

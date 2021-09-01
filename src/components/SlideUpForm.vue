@@ -20,7 +20,7 @@
                 <button-gray></button-gray>
             </div>
             <div class="flex flex-initial">
-                <button-save @click="pushGPStoGeoJSON(), logFormInputData(), consoleLogFormInputsData()"></button-save>
+                <button-save @click="pushGPStoGeoJSON(), updateFormInputsData(form_inputs_data)"></button-save>
             </div>
         </div>
     </div>
@@ -50,12 +50,10 @@ export default {
         const form_inputs_data = reactive([]);
         const logFormInputData = (event) => {
             // form_inputs_data.value.push(...form_inputs)
-            console.log(event);
+            // console.log(event);
             form_inputs_data[(event.id - 1)] = event.value;
         }
-        const consoleLogFormInputsData = () => {
-            console.log(form_inputs_data);
-        }
+        const updateFormInputsData = inject('updateFormInputsData');
 
         return {
             GPScoordinates,
@@ -64,7 +62,7 @@ export default {
             pushGPStoGeoJSON,
             toggleSlideUpForm,
             logFormInputData,
-            consoleLogFormInputsData
+            updateFormInputsData,
         }
     }
 }
