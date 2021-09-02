@@ -28,7 +28,9 @@
 
     <!-- Define map box -->
     <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" style="z-index:5; height:30vh">
-        <l-geo-json ref="geojson" v-if="show_geoJson" :geojson="geojson_data" :options="geojson_options" />
+        <l-geo-json ref="geojson" v-if="show_geoJson" :geojson="geojson_data" :options="geojson_options">
+          <l-popup>Hello! I am a pop up.</l-popup>
+        </l-geo-json>
         <l-tile-layer v-if="show_basemap" url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap" :max-zoom="10" />
         <l-marker :lat-lng="GPScoordinates" draggable @move="updateCoordinates"></l-marker>
     </l-map>
@@ -58,7 +60,7 @@ import { ref, onBeforeMount, onMounted, provide, reactive, watch} from 'vue';
 import Dropdown from "../components/Dropdown.vue";
 import DropdownContent from "../components/DropdownContent.vue";
 import SlideUpForm from "../components/SlideUpForm.vue";
-import { LMap, LTileLayer, LGeoJson, LMarker } from "@vue-leaflet/vue-leaflet";
+import {  LGeoJson, LMap, LMarker, LPopup, LTileLayer, } from "@vue-leaflet/vue-leaflet";
 export default {
 
     components: {
@@ -67,10 +69,11 @@ export default {
         DropdownContent,
         SlideUpForm,
         //leaflet
-        LMap,
-        LTileLayer,
         LGeoJson,
-        LMarker
+        LMap,
+        LMarker,
+        LPopup,
+        LTileLayer,
     },
     setup() {
 
