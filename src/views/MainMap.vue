@@ -29,7 +29,11 @@
     <!-- Define map box -->
     <l-map ref="map" v-model:zoom="zoom" :center="[47.41322, -1.219482]" style="z-index:5; height:30vh">
         <l-geo-json ref="geojson" v-if="show_geoJson" :geojson="geojson_data" :options="geojson_options">
-          <l-popup>Hello! I am a pop up.</l-popup>
+          <l-popup>Hello! I am a pop up.
+            <p>
+              <button-gray button_text="Edit"></button-gray>
+            </p>
+          </l-popup>
         </l-geo-json>
         <l-tile-layer v-if="show_basemap" url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" layer-type="base" name="OpenStreetMap" :max-zoom="10" />
         <l-marker :lat-lng="GPScoordinates" draggable @move="updateCoordinates"></l-marker>
@@ -60,11 +64,13 @@ import { ref, onBeforeMount, onMounted, provide, reactive, watch} from 'vue';
 import Dropdown from "../components/Dropdown.vue";
 import DropdownContent from "../components/DropdownContent.vue";
 import SlideUpForm from "../components/SlideUpForm.vue";
+import ButtonGray from "../components/ButtonGray.vue"
 import {  LGeoJson, LMap, LMarker, LPopup, LTileLayer, } from "@vue-leaflet/vue-leaflet";
 export default {
 
     components: {
         // FormModal,
+        ButtonGray,
         Dropdown,
         DropdownContent,
         SlideUpForm,

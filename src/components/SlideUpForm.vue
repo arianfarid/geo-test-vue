@@ -17,7 +17,6 @@
             </div>
             {{form_inputs_data}}
             <div class="flex flex-initial">
-                <button-gray></button-gray>
             </div>
             <div class="flex flex-initial">
                 <button-save @click="pushGPStoGeoJSON(), updateFormInputsData(form_inputs_data)"></button-save>
@@ -29,13 +28,11 @@
 import { inject, reactive } from 'vue';
 import ButtonSave from "../components/ButtonSave.vue"
 import FormInput from "../components/FormInput.vue"
-import ButtonGray from "../components/ButtonGray.vue";
 
 export default {
     components: {
         //form items
         FormInput,
-        ButtonGray,
         ButtonSave,
     },
     props: {
